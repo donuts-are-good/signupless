@@ -1,0 +1,70 @@
+openapi: "3.0.0"
+info:
+  title: Signupless API
+  description: An API for the Signupless Sessions as a Service Pl
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /session/add:
+    post:
+      summary: Create a new session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: The identifier for the new session
+              required:
+                - id
+      responses:
+        '200':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+    description: Create a new session
+  /session/check:
+    get:
+      summary: Check the validity of a session token
+      parameters:
+        - in: header
+          name: session-token
+          schema:
+            type: string
+          required: true
+          description: A token representing the session to be checked
+      responses:
+        '200':
+          description: Session is valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Bad request
+        '403':
+          description: Session token is invalid or has expired
+        '500':
+          description: Internal server error
+    description: Check the validity of a session token
+components:
+  schemas:
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The identifier for the session
+        token:
+          type: string
+          description: A token representing the session
